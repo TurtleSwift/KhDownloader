@@ -6,6 +6,8 @@
 
 Just run the app and follow the instructions. Requires an interactive shell. Looks best when unicode is supported.
 
+[demo-linux](https://github.com/user-attachments/assets/0e4df70d-89cd-40cb-8ea8-f6ce3fc14ac2)
+
 ## Development
 
 .NET 9 SDK is needed to build and develop the app. Open a PR if you wish to contribute.
