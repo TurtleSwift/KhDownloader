@@ -1,0 +1,86 @@
+name: Build and Release all systems x64
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. 1.0.0)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - name: Dotnet publish win-x64
+        run: dotnet publish src/KhDownloader.csproj -c Release -r win-x64 -p:PublishAot=true -p:PublishTrimmed=true -p:Version=${{ github.event.inputs.version }} --self-contained true -o out/win-x64
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-x64
+          path: out/win-x64
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - name: Dotnet publish linux-x64
+        run: dotnet publish src/KhDownloader.csproj -c Release -r linux-x64 -p:PublishAot=true -p:PublishTrimmed=true -p:Version=${{ github.event.inputs.version }} --self-contained true -o out/linux-x64
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-x64
+          path: out/linux-x64
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+      - name: Dotnet publish osx-x64
+        run: dotnet publish src/KhDownloader.csproj -c Release -r osx-x64 -p:PublishAot=true -p:PublishTrimmed=true -p:Version=${{ github.event.inputs.version }} --self-contained true -o out/osx-x64
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: osx-x64
+          path: out/osx-x64
+
+  release:
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      - name: Zip artifacts
+        run: |
+          rm -r artifacts/osx-x64/*.dSYM
+          zip -r linux-x64.zip artifacts/linux-x64/ -j
+          zip -r osx-x64.zip artifacts/osx-x64/ -j
+          zip -r win-x64.zip artifacts/win-x64/ -j
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          name: v${{ github.event.inputs.version }}
+          files: ./*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
