@@ -1,6 +1,6 @@
 ## Info
 
-**KhDownloader** is a simple app for downloading albums from khinsider.com. Works on Windows, Linux, and macOS. Binaries are provided for x64 architectures. No dependencies required — the program runs from a single binary.
+**KhDownloader** is a simple app for downloading albums from [khinsider](https://downloads.khinsider.com/). Works on Windows, Linux, and macOS. Binaries are provided for x64 architectures. No dependencies required — the program runs from a single binary.
 
 ## Usage
 
