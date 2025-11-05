@@ -10,6 +10,19 @@ Just run the app and follow the instructions. Requires an interactive shell. Loo
 
 https://github.com/user-attachments/assets/c5bf729a-0183-45f2-b682-480492d75538
 
+<details>
+<summary>How to turn on unicode support in PowerShell</summary>
+
+Modify your powershell profile or simply execute this:
+
+```
+if (-not (Test-Path $PROFILE)) { New-Item -Path $PROFILE -ItemType File | Out-Null }
+Add-Content -Path $PROFILE -Value "[console]::InputEncoding = [console]::OutputEncoding = [System.Text.UTF8Encoding]::new()"
+```
+
+This checks if a profile file exists, creates one if it does not and appends a line which enables unicode on the profile. This gets executed every time a new terminal window is opened. Not required but looks nicer.
+</details>
+
 ## Development
 
 .NET 9 SDK is needed to build and develop the app. Open a PR if you wish to contribute.
