@@ -16,7 +16,7 @@ https://github.com/user-attachments/assets/c5bf729a-0183-45f2-b682-480492d75538
 Modify your powershell profile or simply execute this:
 
 ```
-if (-not (Test-Path $PROFILE)) { New-Item -Path $PROFILE -ItemType File | Out-Null }
+if (-not (Test-Path $PROFILE)) { New-Item -Path $PROFILE -ItemType File -Force | Out-Null }
 Add-Content -Path $PROFILE -Value "[console]::InputEncoding = [console]::OutputEncoding = [System.Text.UTF8Encoding]::new()"
 ```
 
