@@ -2,7 +2,6 @@
 using Spectre.Console;
 using Spectre.Console.Extensions;
 using System.Diagnostics;
-using TextCopy;
 using static KhDownloader.KhClient;
 
 // Style settings
@@ -15,23 +14,12 @@ var client = new KhClient();
 
 try
 {
-    // Use clipboard or ask for album URL
     Uri? albumEntryUrl = null;
-    var useClipboard = false;
-    if (Utils.IsClipboardAvailable())
-    {
-        var clipboardString = await ClipboardService.GetTextAsync();
-        if (KhClient.TryCreateAlbumUri(clipboardString, out albumEntryUrl))
-        {
-            useClipboard = await AnsiConsole.PromptAsync(
-                new ConfirmationPrompt($"Use album [link {accentColor}]{clipboardString}[/]"));
-        }
-    }
 
-    if (!useClipboard)
-        await AnsiConsole.PromptAsync(
-            new TextPrompt<string>($"Enter [{accentColor}]full album URI[/]:")
-            .Validate(str => KhClient.TryCreateAlbumUri(str, out albumEntryUrl) ? ValidationResult.Success() : ValidationResult.Error($"[{errorColor}]Invalid URI given![/]")));
+    // Ask for album URL
+    await AnsiConsole.PromptAsync(
+        new TextPrompt<string>($"Enter [{accentColor}]full album URI[/]:")
+        .Validate(str => KhClient.TryCreateAlbumUri(str, out albumEntryUrl) ? ValidationResult.Success() : ValidationResult.Error($"[{errorColor}]Invalid URI given![/]")));
 
     AnsiConsole.Clear();
 

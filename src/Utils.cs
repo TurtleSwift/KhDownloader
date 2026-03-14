@@ -55,38 +55,6 @@ public static class Utils
         return $"{ts.Seconds}s";
     }
 
-    public static bool IsClipboardAvailable()
-    {
-        if (!OperatingSystem.IsLinux())
-            return true;
-
-        // Linux requires xsel be installed for clipboard to work
-#if LINUX
-        try
-        {
-            var psi = new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = "xsel",
-                Arguments = "--version",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            using var proc = System.Diagnostics.Process.Start(psi);
-            proc?.WaitForExit(500);
-            return proc?.ExitCode == 0;
-        }
-        catch
-        {
-            return false;
-        }
-#endif
-
-        return false;
-    } 
-
     public static async Task PressAnyKeyOrWaitAsync(int delayInMs)
     {
         await AnsiConsole.Status()

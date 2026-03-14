@@ -13,7 +13,3 @@ Rich experience provided with *Spectre.Console*. This should probably be moved t
 ### Utils.cs
 
 Contains a few static helpers.
-
-#### Anything else?
-
-Clipboard on linux requires `xsel`. `Utils.IsClipboardAvailable()` checks this.
