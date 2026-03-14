@@ -109,6 +109,12 @@ public static class Utils
                 });
     }
 
+    public static string GetSafeDirectoryName(string dirName)
+    {
+        var invalidChars = Path.GetInvalidPathChars();
+        return new string(dirName.Where(c => !invalidChars.Contains(c)).ToArray());
+    }
+
     private class NullSpinner : Spinner
     {
         public override TimeSpan Interval => TimeSpan.FromMinutes(1);

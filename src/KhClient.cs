@@ -26,7 +26,7 @@ internal class KhClient
         doc.LoadHtml(await response.Content.ReadAsStringAsync());
 
         var h2Node = doc.DocumentNode.SelectSingleNode("//h2");
-        var albumTitle = h2Node.InnerText;
+        var albumTitle = HtmlEntity.DeEntitize(h2Node.InnerText);
 
         var album = new KhAlbum
         {
@@ -46,7 +46,7 @@ internal class KhClient
             if (links is not null)
             {
                 var url = links[0].GetAttributeValue("href", "");
-                var title = links[0].InnerText;
+                var title = HtmlEntity.DeEntitize(links[0].InnerText);
                 var length = links[1].InnerText;
                 var trackNumberText = row.SelectSingleNode(".//td[@align='right']").InnerText.Trim('.');
 

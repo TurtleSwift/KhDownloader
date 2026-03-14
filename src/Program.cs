@@ -86,7 +86,7 @@ try
 
     // Make directory if needed
     //var localPath = Path.GetDirectoryName(AppContext.BaseDirectory);
-    var downloadDir = Path.Combine(Directory.GetCurrentDirectory(), khAlbumResult.ResultValue.Title);
+    var downloadDir = Path.Combine(Directory.GetCurrentDirectory(), Utils.GetSafeDirectoryName(khAlbumResult.ResultValue.Title));
 
     if (!Directory.Exists(downloadDir))
         Directory.CreateDirectory(downloadDir);
@@ -100,10 +100,10 @@ try
         .AutoClear(false)
         .Columns(new ProgressColumn[]
         {
-        new TaskDescriptionColumn(),
-        new ProgressBarColumn(),
-        new DownloadedColumn(),
-        new SpinnerColumn(spinner)
+            new TaskDescriptionColumn(),
+            new ProgressBarColumn(),
+            new DownloadedColumn(),
+            new SpinnerColumn(spinner)
         })
         .StartAsync(async ctx =>
         {
