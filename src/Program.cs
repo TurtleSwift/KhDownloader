@@ -48,7 +48,7 @@ try
         Environment.Exit(1);
     }
 
-    AnsiConsole.Write(new Panel($"[{accentColor}]{khAlbumResult.ResultValue.Title}[/]"));
+    AnsiConsole.Write(new Panel($"[{accentColor}]{Markup.Escape(khAlbumResult.ResultValue.Title)}[/]"));
 
     // Select format if needed (MP3 or FLAC)
     var selectedFormat = khAlbumResult.ResultValue.HasFlac ? AnsiConsole.Prompt(
@@ -65,7 +65,7 @@ try
         .PageSize(15)
         .MoreChoicesText($"[{disabledColor}](Move up and down to reveal more tracks)[/]")
         .InstructionsText($"[{disabledColor}](Press [{accentColor}]<space>[/] to toggle download, [{accentColor}]<enter>[/] to accept)[/]")
-        .UseConverter(track => $"{Utils.ToStringWithUnit(track.GetSize(selectedFormat)),-10}{track.Length,-6}{$"{track.Number}.",4} {track.Title}");
+        .UseConverter(track => Markup.Escape($"{Utils.ToStringWithUnit(track.GetSize(selectedFormat)),-10}{track.Length,-6}{$"{track.Number}.",4} {track.Title}"));
 
     foreach (var track in khAlbumResult.ResultValue.Tracks)
         prompt.AddChoices(track, t => t.Select());
@@ -112,7 +112,7 @@ try
                 await semaphore.WaitAsync();
                 try
                 {
-                    var progressTask = ctx.AddTask(track.Title, autoStart: true).IsIndeterminate(true);
+                    var progressTask = ctx.AddTask(Markup.Escape(track.Title), autoStart: true).IsIndeterminate(true);
 
                     var trackStreamResult = await client.GetTrackStreamAsync(track, selectedFormat);
                     if (trackStreamResult.IsSuccessful)
