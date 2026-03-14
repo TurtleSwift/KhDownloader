@@ -25,7 +25,7 @@ This checks if a profile file exists, creates one if it does not and appends a l
 
 ## Development
 
-.NET 9 SDK is needed to build and develop the app. Open a PR if you wish to contribute.
+.NET 10 SDK is needed to build and develop the app. Open a PR if you wish to contribute.
 
 ## Khinsider
 
