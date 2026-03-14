@@ -50,13 +50,21 @@ internal class KhClient
                 var length = links[1].InnerText;
                 var trackNumberText = row.SelectSingleNode(".//td[@align='right']").InnerText.Trim('.');
 
-                var sizes = new Dictionary<KhTrackFormat, long>
-                { { KhTrackFormat.Mp3, Utils.ToBytes(links[2].InnerText) } }; // MP3 size
-                if (hasFlac) 
-                    sizes.Add(KhTrackFormat.Flac, Utils.ToBytes(links[3].InnerText)); // FLAC size
+                var sizes = new Dictionary<KhTrackFormat, long>();
+
+                var mp3SizeStr = links[2].InnerText; // MP3 size
+                if (!string.IsNullOrEmpty(mp3SizeStr))
+                    sizes.Add(KhTrackFormat.Mp3, Utils.ToBytes(mp3SizeStr));
+
+                if (hasFlac)
+                {
+                    var flacSizeStr = links[3].InnerText; // FLAC size
+                    if (!string.IsNullOrEmpty(flacSizeStr))
+                        sizes.Add(KhTrackFormat.Flac, Utils.ToBytes(flacSizeStr));
+                }
 
                 _ = int.TryParse(trackNumberText, out var trackNumber);
-                album.Tracks.Add(new (url, title, sizes, length, trackNumber));
+                album.AddTrack(new (url, title, sizes, length, trackNumber));
             }
         }
 
@@ -117,11 +125,17 @@ internal class KhClient
 
     internal record KhAlbum
     {
+        private List<KhTrack> tracks = [];
+
         public required string Title { get; init; }
-        public List<KhTrack> Tracks { get; set; } = [];
-        public int TrackCount => Tracks.Count;
-        public bool HasFlac => Tracks.Any(t => t.Sizes.ContainsKey(KhTrackFormat.Flac));
-        public long GetTotalSize(KhTrackFormat format) => Tracks.Sum(t => t.GetSize(format));
+        public int TrackCount => tracks.Count;
+        public bool HasFlac => tracks.Any(t => t.Sizes.ContainsKey(KhTrackFormat.Flac));
+        public long GetTotalSize(KhTrackFormat format) => tracks.Sum(t => t.GetSize(format));
+
+        public void AddTrack(KhTrack track) => tracks.Add(track);
+        
+        /// <summary> Only return tracks with have files in the given format. </summary>
+        public IEnumerable<KhTrack> GetTracksWithFormat(KhTrackFormat format) => tracks.Where(t => t.Sizes.ContainsKey(format));
     }
 
     internal enum KhTrackFormat

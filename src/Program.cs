@@ -67,7 +67,7 @@ try
         .InstructionsText($"[{disabledColor}](Press [{accentColor}]<space>[/] to toggle download, [{accentColor}]<enter>[/] to accept)[/]")
         .UseConverter(track => Markup.Escape($"{Utils.ToStringWithUnit(track.GetSize(selectedFormat)),-10}{track.Length,-6}{$"{track.Number}.",4} {track.Title}"));
 
-    foreach (var track in khAlbumResult.ResultValue.Tracks)
+    foreach (var track in khAlbumResult.ResultValue.GetTracksWithFormat(selectedFormat))
         prompt.AddChoices(track, t => t.Select());
 
     var selectedTracks = await AnsiConsole.PromptAsync(prompt);
