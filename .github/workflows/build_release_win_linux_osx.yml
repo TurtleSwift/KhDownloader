@@ -61,9 +61,24 @@ jobs:
         with:
           name: osx-x64
           path: out/osx-x64
-
+  build-macos-arm:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Dotnet publish osx-arm64
+        run: dotnet publish src/KhDownloader.csproj -c Release -r osx-arm64 -p:PublishAot=true -p:PublishTrimmed=true -p:Version=${{ github.event.inputs.version }} --self-contained true -o out/osx-arm64
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: osx-arm64
+          path: out/osx-arm64
   release:
-    needs: [build-windows, build-linux, build-macos]
+    needs: [build-windows, build-linux, build-macos, build-macos-arm]
     runs-on: ubuntu-latest
     steps:
       - name: Get artifacts
@@ -73,8 +88,10 @@ jobs:
       - name: Zip artifacts
         run: |
           rm -r artifacts/osx-x64/*.dSYM
+          rm -r artifacts/osx-arm64/*.dSYM
           zip -r linux-x64.zip artifacts/linux-x64/ -j
           zip -r osx-x64.zip artifacts/osx-x64/ -j
+          zip -r osx-arm64.zip artifacts/osx-arm64/ -j
           zip -r win-x64.zip artifacts/win-x64/ -j
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
