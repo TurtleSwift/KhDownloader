@@ -5,8 +5,14 @@
 ## Usage
 
 Just run the app and follow the instructions. Requires an interactive shell. Looks best when unicode is supported.
-
+<details>
+<summary>Demo video</summary>
+  
+### Linux
+  
 [demo-linux](https://github.com/user-attachments/assets/0e4df70d-89cd-40cb-8ea8-f6ce3fc14ac2)
+
+### Windows
 
 https://github.com/user-attachments/assets/c5bf729a-0183-45f2-b682-480492d75538
 
@@ -21,6 +27,7 @@ Add-Content -Path $PROFILE -Value "[console]::InputEncoding = [console]::OutputE
 ```
 
 This checks if a profile file exists, creates one if it does not and appends a line which enables unicode on the profile. This gets executed every time a new terminal window is opened. Not required but looks nicer.
+</details>
 </details>
 
 ## Development
