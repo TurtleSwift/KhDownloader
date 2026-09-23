@@ -291,3 +291,6 @@ __pycache__/
 # We dont want solutions for this project
 *.sln
 *.slnx
+
+# Ignore publish build files when building yourself
+/out/**

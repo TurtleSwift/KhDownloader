@@ -1,0 +1,46 @@
+#!/bin/sh
+
+set -e
+
+if [ -n "${APPDIR:-}" ]; then
+    HERE="${APPDIR}"
+else
+    HERE="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+fi
+
+BIN="${HERE}/usr/bin/KhDownloader"
+
+if [ -t 0 ] && [ -t 1 ]; then
+    exec "${BIN}" "$@"
+fi
+
+# Try known terminal emulators until one works
+for TERMINAL in x-terminal-emulator gnome-terminal konsole xfce4-terminal \
+    mate-terminal tilix terminator alacritty kitty foot lxterminal xterm; do
+    if command -v "${TERMINAL}" >/dev/null 2>&1; then
+        case "${TERMINAL}" in
+            gnome-terminal|mate-terminal)
+                exec "${TERMINAL}" -- "${BIN}"
+                ;;
+            xfce4-terminal|terminator)
+                exec "${TERMINAL}" -x "${BIN}"
+                ;;
+            kitty|foot)
+                exec "${TERMINAL}" "${BIN}"
+                ;;
+            *)
+                # konsole, tilix, alacritty, lxterminal, xterm,
+                # x-terminal-emulator all understand "-e <command>".
+                exec "${TERMINAL}" -e "${BIN}"
+                ;;
+        esac
+    fi
+done
+
+echo "KhDownloader: no terminal emulator found. Run '${BIN}' from a terminal manually." >&2
+
+if command -v notify-send >/dev/null 2>&1; then
+    notify-send "KhDownloader" "No terminal emulator found. Please run KhDownloader from a terminal." || true
+fi
+
+exit 1

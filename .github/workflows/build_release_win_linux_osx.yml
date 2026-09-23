@@ -44,6 +44,15 @@ jobs:
         with:
           name: linux-x64
           path: out/linux-x64
+      - name: Build AppImage
+        run: |
+          chmod +x packaging/appimage/AppRun packaging/appimage/build.sh
+          packaging/appimage/build.sh out/linux-x64 out/appimage
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-x64-appimage
+          path: out/appimage/KhDownloader-x86_64.AppImage
 
   build-macos:
     runs-on: macos-latest
@@ -93,11 +102,15 @@ jobs:
           zip -r osx-x64.zip artifacts/osx-x64/ -j
           zip -r osx-arm64.zip artifacts/osx-arm64/ -j
           zip -r win-x64.zip artifacts/win-x64/ -j
+          cp artifacts/linux-x64-appimage/KhDownloader-x86_64.AppImage ./KhDownloader-x86_64.AppImage
+          chmod +x ./KhDownloader-x86_64.AppImage
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.version }}
           name: v${{ github.event.inputs.version }}
-          files: ./*.zip
+          files: |
+            ./*.zip
+            ./KhDownloader-x86_64.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

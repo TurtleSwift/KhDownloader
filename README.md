@@ -5,11 +5,14 @@
 ## Usage
 
 Just run the app and follow the instructions. Requires an interactive shell. Looks best when unicode is supported.
+
 <details>
 <summary>Demo video</summary>
   
 ### Linux
-  
+
+Run the linux binary from your terminal emulator or lanuch the AppImage from your desktop which will try to launch a default terminal emulator window for you.
+
 [demo-linux](https://github.com/user-attachments/assets/0e4df70d-89cd-40cb-8ea8-f6ce3fc14ac2)
 
 ### Windows

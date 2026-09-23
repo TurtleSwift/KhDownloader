@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=KhDownloader
+GenericName=KhInsider Album Downloader
+Comment=Download albums from downloads.khinsider.com
+Exec=AppRun
+Icon=khdownloader
+Terminal=true
+Categories=Utility;Network;
