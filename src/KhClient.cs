@@ -17,7 +17,8 @@ internal class KhClient
 
     public async Task<Result<KhAlbum>> GetAlbumInfoAsync(Uri khAlbumUrl)
     {
-        var response = await _httpClient.GetAsync(khAlbumUrl);
+        using var request = CreateRequest(khAlbumUrl.ToString());
+        var response = await _httpClient.SendAsync(request);
 
         if (!response.IsSuccessStatusCode)
             return Result<KhAlbum>.Problem($"Server responded with {response.StatusCode}.");
@@ -73,7 +74,8 @@ internal class KhClient
 
     public async Task<Result<KhTrackContent>> GetTrackStreamAsync(KhTrack track, KhTrackFormat format)
     {
-        var trackDetailResponse = await _httpClient.GetAsync(track.Url);
+        using var trackDetailRequest = CreateRequest(track.Url);
+        var trackDetailResponse = await _httpClient.SendAsync(trackDetailRequest);
         if (!trackDetailResponse.IsSuccessStatusCode)
             return Result<KhTrackContent>.Problem($"server responded with {trackDetailResponse.StatusCode}.");
 
@@ -90,7 +92,8 @@ internal class KhClient
         if (string.IsNullOrEmpty(audioFileUrl))
             return Result<KhTrackContent>.Problem($"Audio file not found!");
 
-        var trackResponse = await _httpClient.GetAsync(audioFileUrl, HttpCompletionOption.ResponseHeadersRead);
+         using var trackRequest = CreateRequest(audioFileUrl);
+        var trackResponse = await _httpClient.SendAsync(trackRequest, HttpCompletionOption.ResponseHeadersRead);
         if (!trackResponse.IsSuccessStatusCode)
             return Result<KhTrackContent>.Problem($"server responded with {trackResponse.StatusCode}.");
                 
@@ -116,6 +119,14 @@ internal class KhClient
 
         albumUri = uri;
         return true;
+    }
+
+    private HttpRequestMessage CreateRequest(string requestUri)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+        request.Headers.UserAgent.ParseAdd("KhDownloader");
+        request.Headers.TryAddWithoutValidation("Sec-GPC", "1");
+        return request;
     }
 
     internal record KhTrack(string Url, string Title, IReadOnlyDictionary<KhTrackFormat, long> Sizes, string Length, int Number)
