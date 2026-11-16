@@ -1,6 +1,5 @@
 ﻿using KhDownloader;
 using Spectre.Console;
-using Spectre.Console.Extensions;
 using System.Diagnostics;
 using static KhDownloader.KhClient;
 

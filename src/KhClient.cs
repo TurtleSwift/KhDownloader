@@ -27,11 +27,11 @@ internal class KhClient
         doc.LoadHtml(await response.Content.ReadAsStringAsync());
 
         var h2Node = doc.DocumentNode.SelectSingleNode("//h2");
-        var albumTitle = HtmlEntity.DeEntitize(h2Node.InnerText);
+        var albumTitle = HtmlEntity.DeEntitize(h2Node?.InnerText);
 
         var album = new KhAlbum
         {
-            Title = albumTitle
+            Title = albumTitle ?? string.Empty
         };
 
         var rows = doc.DocumentNode.SelectNodes("//table[@id='songlist']/tr");
@@ -39,7 +39,7 @@ internal class KhClient
             return Result<KhAlbum>.Problem($"No tracks in album!");
 
         var headers = doc.DocumentNode.SelectNodes("//tr[@id='songlist_header']/th");
-        var hasFlac = headers.Any(h => h.InnerText.Contains("FLAC", StringComparison.OrdinalIgnoreCase));
+        var hasFlac = headers?.Any(h => h.InnerText.Contains("FLAC", StringComparison.OrdinalIgnoreCase)) ?? false;
 
         foreach (var row in rows)
         {
@@ -49,7 +49,7 @@ internal class KhClient
                 var url = links[0].GetAttributeValue("href", "");
                 var title = HtmlEntity.DeEntitize(links[0].InnerText);
                 var length = links[1].InnerText;
-                var trackNumberText = row.SelectSingleNode(".//td[@align='right']").InnerText.Trim('.');
+                var trackNumberText = row.SelectSingleNode(".//td[@align='right']")?.InnerText.Trim('.');
 
                 var sizes = new Dictionary<KhTrackFormat, long>();
 
@@ -129,7 +129,7 @@ internal class KhClient
         return request;
     }
 
-    internal record KhTrack(string Url, string Title, IReadOnlyDictionary<KhTrackFormat, long> Sizes, string Length, int Number)
+    internal record KhTrack(string Url, string Title, IReadOnlyDictionary<KhTrackFormat, long> Sizes, string Length, int? Number)
     {
         public long GetSize(KhTrackFormat format) => Sizes.TryGetValue(format, out var size) ? size : 0;
     }
