@@ -2,6 +2,8 @@
 
 **KhDownloader** is a simple app for downloading albums from [khinsider](https://downloads.khinsider.com/). Works on Windows, Linux, and macOS. No dependencies required — the program runs from a single binary.
 
+‼️ **May not work on Windows**. `HttpClient` on Windows uses Microsoft's TLS/SSL implementation (Schannel) and may not correctly handle handshakes, which triggers CloudFlare protection and responds with 403 Forbidden. I've not looked much into this yet, but be aware. Linux is unaffected. Mac is unknown - I've never tested the app there.
+
 ## Usage
 
 Just run the app and follow the instructions. Requires an interactive shell. Looks best when unicode is supported.
@@ -35,7 +37,7 @@ This checks if a profile file exists, creates one if it does not and appends a l
 
 ## Development
 
-.NET 10 SDK is needed to build and develop the app. Open a PR if you wish to contribute.
+.NET 11 SDK is needed to build and develop the app. Open a PR if you wish to contribute.
 
 ## Khinsider
 
